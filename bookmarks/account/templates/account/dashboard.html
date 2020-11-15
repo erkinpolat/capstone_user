@@ -3,7 +3,8 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
 	<h1>Dashboard</h1>
-	<p>Welcome to your dashboard</p>
-	<a href="{% url 'password_change' %}">Change your password</a>
+	<p>Welcome to your dashboard {{ request.user.first_name|title }}</p>
+	
 {% endblock %}
