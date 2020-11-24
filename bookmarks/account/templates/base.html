@@ -8,7 +8,7 @@
 
 <body>
 	<div id ="header">
-		<span class="logo">Recipe Hub</span>
+		<span class="logo"><a href="/recipes/welcome/">Recipe Hub</a></span>
 		{% if request.user.is_authenticated %}
 			<ul class="menu">
 				<li {% if section == "dashboard" %}class="selected"{% endif %}>

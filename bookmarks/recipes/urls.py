@@ -8,4 +8,5 @@ urlpatterns = [
 	path('detail/<int:id>/<slug:slug>/', views.recipe_detail, name='detail'),
 	path('', views.recipe_list, name='list'),
 	path('like/', views.recipe_like, name='like'),
+	path('welcome/', views.mainpage, name='mainpage'),
 ]

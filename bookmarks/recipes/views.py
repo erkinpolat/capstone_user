@@ -59,6 +59,9 @@ def recipe_like(request):
 	return JsonResponse({'status': 'error'})
 
 
+def mainpage(request):
+	return render(request, 'recipes/recipe/mainpage.html')
+
 @login_required
 def recipe_list(request):
 	recipes = Recipe.objects.all()
