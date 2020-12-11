@@ -2,8 +2,34 @@
 
 {% block title %}Recipe Hub{% endblock %}
 
+{% block styles %}{% endblock %}
+
 {% block content %}
-	<h1>Recipe Hub</h1>	
+	<div class="row">
+	    <div class="col-md-1"></div>
+	    <div class="col-md-8 col-xl-8 offset-md-1 offset-xl-0" style="width: 990px;">
+	        <div class="card m-auto" style="max-width: 850px;">
+	            <div class="card-body">
+	                <form class="d-flex align-items-center" method="get">
+	                	<i class="fas fa-search d-none d-sm-block h4 text-body m-0"></i>
+	                	<input class="form-control form-control-lg flex-shrink-1 form-control-borderless" type="text" placeholder="Search in {{ section|title }}" name="q">
+	                	<button class="btn btn-dark btn-lg" type="submit">Search</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-md-3 d-xl-flex justify-content-xl-center align-items-xl-center">
+	        <div>
+	            <button class="btn btn-dark dropdown-toggle dropdown-toggle-split text-truncate" data-toggle="dropdown" aria-expanded="false" type="button">Browse by {{ browse_key }}&nbsp;</button>
+	                <div class="dropdown-menu" role="menu">
+	                	{% for item in browse %}
+	                		<a class="dropdown-item" role="presentation" href="{{ item.get_absolute_url }}">{{ item }}</a>
+	                	{% endfor %}
+	                </div>
+	        </div>
+	    </div>
+	</div>
+
 
 	<div id="image-list">
 		{% include "recipes/recipe/list_ajax.html" %}
@@ -33,3 +59,4 @@
 			}
      	});
 {% endblock %}
+

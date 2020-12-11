@@ -1,17 +1,32 @@
 {% load thumbnail %}
 
-{% for recipe in recipes %}
-	<div class='image'>
-		<a href="{{ recipe.get_absolute_url }}">
-			{% thumbnail recipe.picture 300x300 crop="smart" as im %}
-			<a href="{{ recipe.get_absolute_url }}">
-				<img src="{{ im.url }}">
-			</a>
-		</a>
-		<div class="info">
-			<a href="{{ recipe.get_absolute_url }}" class="title">
-				{{ recipe.title }}
-			</a>
-		</div>
-	</div>
-{% endfor %}
+<div class="projects-clean">
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">
+
+                    Explore {{ section|title }}
+
+                    {% if section == "articles" %}
+                        <a class="btn btn-dark" href="{% url 'recipes:article_create' %}">Write</a>
+                    {% else %}
+                        <a class="btn btn-dark" href="{% url 'recipes:create' %}">Write</a>
+                    {% endif %}
+                 </h2>
+            </div>
+            
+            <div class="row projects">
+                {% for recipe in recipes %}
+                    <div class="col-sm-6 col-lg-4 item" data-href="{{ recipe.get_absolute_url }}">
+                        <a href="{{ recipe.get_absolute_url }}">
+                            {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+                            <a href="{{ recipe.get_absolute_url }}">
+                                <img src="{{ im.url }}">
+                            </a>
+                        </a>
+
+                        <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+                        <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+                    </div>    
+                {% endfor %}
+            </div>

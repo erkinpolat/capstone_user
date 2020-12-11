@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% load thumbnail %}
+{% block title %}Profile{% endblock %}	
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+
+	<div class="article-dual-column">
+		<div class="card">
+		    <div class="card-body text-center"><img class="rounded-circle" src="{{ user.profile.photo.url }}" style="width: 120px;" />
+		        <h1 class="text-muted card-subtitle mb-2">{{ user.first_name|title }} {{ user.last_name|title }}</h1>
+		        
+				
+				{% with total_followers=user.profile.followers.count followers=user.profile.followers.all %}
+			        <div>
+			        	
+			        	{% if request.user.is_authenticated %}
+				        	{% if request.user not in followers %}
+					        	<form id="{{ user.id }}" action= "{% url 'other_profile' user.id %}" method="post">
+					        		{% csrf_token %}    
+					        	    	<input type="hidden" name="title" value="follow"/>
+					        	    	<button class="btn btn-dark" type="submit">Follow</button>
+					        	</form>
+
+				        	{% else %}
+					        	<form id="{{ user.id }}" action= "{% url 'other_profile' user.id %}" method="post">
+					        		{% csrf_token %}    
+					        	    	<input type="hidden" name="title" value="unfollow"/>
+					        	    	<button class="btn btn-dark" type="submit">Unfollow</button>
+					        	</form>
+
+				        	{% endif %}
+			        	{% endif %}
+
+				        <span class="count">
+			        		<span class="total">{{ total_followers }}</span>
+			        		follower{{ total_followers|pluralize }}
+			        	</span>
+
+			        	</a>
+			        </div>
+		        {% endwith %}
+		        
+		        {% if user.profile.about %}
+		        	<p class="card-text">{{ user.profile.about }}</p>
+		        {% endif %}
+		    </div>
+		</div>
+	</div>
+
+	<div class="projects-clean">
+		<div>
+		    <ul class="nav nav-tabs nav-fill text-center">
+		        <li class="nav-item"><a class="nav-link text-black-50 active" role="tab" data-toggle="tab" href="#tab-1">Recipes</a></li>
+		        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-2">Articles</a></li>
+		        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-3">Followers</a></li>
+		        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-4">Following</a></li>
+		    </ul>
+		    <div class="tab-content" style="padding-top: 50px">
+		        <div class="tab-pane active" role="tabpanel" id="tab-1">
+		            <div class="row projects">
+		                {% for recipe in recipes %}
+		                    <div class="col-sm-6 col-lg-4 item" data-href="{{ recipe.get_absolute_url }}">
+		                        <a href="{{ recipe.get_absolute_url }}">
+		                            {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+		                            <a href="{{ recipe.get_absolute_url }}">
+		                                <img src="{{ im.url }}">
+		                            </a>
+		                        </a>
+
+		                        <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+		                        <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+		                    </div>    
+		                {% endfor %}
+		            </div>
+		        </div>
+		        <div class="tab-pane" role="tabpanel" id="tab-2">
+		            <div class="row projects">
+		                {% for article in articles %}
+		                    <div class="col-sm-6 col-lg-4 item" data-href="{{ article.get_absolute_url }}">
+		                        <a href="{{ article.get_absolute_url }}">
+		                            {% thumbnail article.picture 350x250 crop="smart" as im %}
+		                            <a href="{{ article.get_absolute_url }}">
+		                                <img src="{{ im.url }}">
+		                            </a>
+		                        </a>
+
+		                        <h3 class="name"><a href="{{ article.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ article.title }}</a></h3>
+		                        <p class="description">{{ article.description|safe|truncatewords:30|linebreaks }}</p>
+		                    </div>    
+		                {% endfor %}
+		            </div>
+		        </div>
+		        <div class="tab-pane" role="tabpanel" id="tab-3">
+                    <div class="row projects">
+                    	<div class="col-sm-6 col-lg-4 item">
+        		            {% for follower in user.profile.followers.all %}
+        			            <a href="{% url 'other_profile' follower.id %}">
+        			            	<img class="rounded-circle" src="{{ follower.profile.photo.url }}" style="width: 120px;" />
+        			        	</a>
+        			        	<a href="{% url 'other_profile' follower.id %}">
+        				        	<h3 class="text-muted card-subtitle mb-2">{{ follower.first_name|title }} {% if follower.last_name %} {{ follower.last_name|title }} {% endif %}</h3>
+        				        </a>
+        			        {% endfor %}
+        			    </div>
+        		    </div>
+		        </div>
+
+		        <div class="tab-pane" role="tabpanel" id="tab-4">
+		                        
+                    <div class="row projects">
+                    	<div class="col-sm-6 col-lg-4 item">
+        		            {% for person in following %}
+        			            <a href="{% url 'other_profile' person.user.id %}">
+        			            	<img class="rounded-circle" src="{{ person.photo.url }}" style="width: 120px;" />
+        			        	</a>
+        			        	<a href="{% url 'other_profile' person.user.id %}">
+        				        	<h3 class="text-muted card-subtitle mb-2">{{ person.user.first_name|title }} {% if person.user.last_name %} {{ person.user.last_name|title }} {% endif %}</h3>
+        				        </a>
+        			        {% endfor %}
+        			    </div>
+        		    </div>
+
+		        </div>
+		    </div>
+		</div>
+
+		</div>
+	</div>
+
+
+{% endblock %}

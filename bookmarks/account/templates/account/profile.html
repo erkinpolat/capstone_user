@@ -1,22 +1,128 @@
 {% extends "base.html" %}
 
+{% load thumbnail %}
 {% block title %}Profile{% endblock %}	
 
+{% block styles %}{% endblock %}
+
 {% block content %}
-	<h1>User Profile</h1>	
-	<div>
-		{% if request.user.profile.photo %}
-			{% load thumbnail %}
-			<a href="{{ request.user.profile.photo.url }}">
-				<img src="{% thumbnail request.user.profile.photo 300x0 %}" class="image-detail">
-			</a>
-		{% endif %}
-		<p>Name: {{ request.user.first_name|title }} {{ request.user.last_name|title }}</p>
-		<p>Birthday: {{ request.user.profile.date_of_birth }}</p>
-		
+
+	<div class="article-dual-column">
+		<div class="card">
+		    <div class="card-body text-center"><img class="rounded-circle" src="{{ request.user.profile.photo.url }}" style="width: 120px;" />
+		        <h1 class="text-muted card-subtitle mb-2">{{ request.user.first_name|title }} {% if request.user.profile.photo %} {{ request.user.last_name|title }} {% endif %}</h1>
+		        
+        		{% with total_followers=request.user.profile.followers.count followers=request.user.profile.followers.all %}
+                	<span class="count">
+                		<span class="total">{{ total_followers }}</span>
+                		follower{{ total_followers|pluralize }}
+                	</span>
+        		{% endwith %}
+
+		        {% if user.profile.about %}
+		        	<p class="card-text">{{ user.profile.about }}</p>
+		        {% endif %}
+		    </div>
+		</div>
+
+
+
+
+		<div class="intro text-center">
+			<a class="text-center" href="{% url 'password_change' %}">Change Password</a>
+			|
+			<a class="text-center" href="{% url 'edit' %}">Edit your profile</a>
+		</div>
 	</div>
 
-	<a href="{% url 'password_change' %}">Change your password</a>
-	</br></br>
-	<a href="{% url 'edit' %}">Edit your profile</a>
+	
+	<div class="projects-clean">
+	    <ul class="nav nav-tabs nav-fill text-center">
+	        <li class="nav-item"><a class="nav-link text-black-50 active" role="tab" data-toggle="tab" href="#tab-1">Recipes ({{ recipes|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-2">Articles ({{ articles|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-3">Followers ({{ request.user.profile.followers.count }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-4">Following ({{ following|length }})</a></li>
+	    </ul>
+	    <div class="tab-content" style="padding-top: 50px">
+	        <div class="tab-pane active" role="tabpanel" id="tab-1">
+	            <div class="row projects">
+	                {% if not recipes %}
+	                	<p style="padding-left: 50px;">You don't have any recipes yet.</p>
+	                	<a class="btn btn-dark" href="{% url 'recipes:create' %}" style="margin-left: 30px">Start Writing</a>
+	                {% endif %}
+
+	                {% for recipe in recipes %}
+	                    <div class="col-sm-6 col-lg-4 item" data-href="{{ recipe.get_absolute_url }}">
+	                        <a href="{{ recipe.get_absolute_url }}">
+	                            {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+	                            <a href="{{ recipe.get_absolute_url }}">
+	                                <img src="{{ im.url }}">
+	                            </a>
+	                        </a>
+
+	                        <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+	                        <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+	                    </div>    
+	                {% endfor %}
+	            </div>
+	        </div>
+	        <div class="tab-pane" role="tabpanel" id="tab-2">
+	            <div class="row projects">
+
+	            	{% if not articles %}
+	                	<p style="padding-left: 50px;">You don't have any articles yet.</p>
+	                	<a class="btn btn-dark" href="{% url 'recipes:article_create' %}" style="margin-left: 30px">Start Writing</a>
+	                {% endif %}
+
+	                {% for article in articles %}
+	                    <div class="col-sm-6 col-lg-4 item" data-href="{{ article.get_absolute_url }}">
+	                        <a href="{{ article.get_absolute_url }}">
+	                            {% thumbnail article.picture 350x250 crop="smart" as im %}
+	                            <a href="{{ article.get_absolute_url }}">
+	                                <img src="{{ im.url }}">
+	                            </a>
+	                        </a>
+
+	                        <h3 class="name"><a href="{{ article.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ article.title }}</a></h3>
+	                        <p class="description">{{ article.description|safe|truncatewords:30|linebreaks }}</p>
+	                    </div>    
+	                {% endfor %}
+	            </div>
+	        </div>
+	        <div class="tab-pane" role="tabpanel" id="tab-3">
+	            
+	            <div class="row projects">
+	            	<div class="col-sm-6 col-lg-4 item">
+			            {% for follower in request.user.profile.followers.all %}
+				            <a href="{% url 'other_profile' follower.id %}">
+				            	<img class="rounded-circle" src="{{ follower.profile.photo.url }}" style="width: 120px;" />
+				        	</a>
+				        	<a href="{% url 'other_profile' follower.id %}">
+					        	<h3 class="text-muted card-subtitle mb-2">{{ follower.first_name|title }} {% if follower.last_name %} {{ follower.last_name|title }} {% endif %}</h3>
+					        </a>
+				        {% endfor %}
+				    </div>
+			    </div>
+
+	        </div>
+	        <div class="tab-pane" role="tabpanel" id="tab-4">
+	            
+	            <div class="row projects">
+	            	<div class="col-sm-6 col-lg-4 item">
+			            {% for person in following %}
+				            <a href="{% url 'other_profile' person.user.id %}">
+				            	<img class="rounded-circle" src="{{ person.photo.url }}" style="width: 120px;" />
+				        	</a>
+				        	<a href="{% url 'other_profile' person.user.id %}">
+					        	<h3 class="text-muted card-subtitle mb-2">{{ person.user.first_name|title }} {% if person.user.last_name %} {{ person.user.last_name|title }} {% endif %}</h3>
+					        </a>
+				        {% endfor %}
+				    </div>
+			    </div>
+
+	        </div>
+	    </div>
+	</div>
+
+
 {% endblock %}

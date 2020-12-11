@@ -2,9 +2,12 @@
 
 {% block title %}New Recipe{% endblock %}
 
+{% block styles %}{% endblock %}
+
 {% block content %}
 	<h1>Add new recipe</h1>
 	<form method="post" enctype="multipart/form-data">
+		{{ form.media }}
 		{{ form.as_p }}
 		{% csrf_token %}
 		<input type="submit" value="Upload">

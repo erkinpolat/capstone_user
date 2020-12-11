@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'recipes.apps.RecipesConfig',
     'easy_thumbnails',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+

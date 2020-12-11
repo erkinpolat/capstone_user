@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+
+{% block title %}Messages{% endblock %}
+
+
+{% block styles %}{% load static %}<link rel="stylesheet" href="{% static 'assets/css/message.css' %}">{% endblock %}
+
+{% block content %}
+
+<div class="container" style="padding-top: 50px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <div class="settings-tray">
+        <img class="profile-image" src="https://upload.wikimedia.org/wikipedia/en/f/fa/Minerva_Schools_at_KGI_Seal.png" alt="Profile image">
+        <span class="settings-tray--right">
+          <i class="material-icons">cached</i>
+          <i class="material-icons">message</i>
+          <i class="material-icons">menu</i>
+        </span>
+      </div>
+      <div class="search-box">
+        <div class="input-wrapper">
+          <i class="material-icons">search</i>
+          <input type="text" placeholder="Search">
+        </div>
+      </div>
+      
+      
+      <div class="scrollable">
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>You should do your readings ahead of time!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+        <hr>
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>Don't be late to my class!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+        <hr>
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>I expect excellence from you!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+        <hr>
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>Tell me more about abstraction!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+        <hr>
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>Tell me more about abstraction!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+        <hr>
+
+        <div class="friend-drawer friend-drawer--onhover">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>I see you're sleeping on the main screen!</p>
+          </div>
+          <span class="time small">10:59</span>
+        </div>
+      </div>
+    
+    
+    </div>
+    
+    
+    
+    
+    <div class="col-md-8">
+      
+      <div class="settings-tray">
+        <div class="friend-drawer no-gutters friend-drawer--grey">
+          <img src="https://media-exp1.licdn.com/dms/image/C4D03AQEQw6-YoSl1hA/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=0BvvYXAn2pWdx0lnWbtuA8Q1RIi5K5unbY56voqgOYI" alt="Friend photo" class="profile-image">
+          <div class="text">
+            <h6>Philip Sterne</h6>
+            <p>Short explanation for the group</p>
+          </div>
+          <span class="float-right">
+            <i class="material-icons">settings</i>
+            <i class="material-icons">info</i>
+          </span>
+        </div>
+      </div>
+      
+      <div class="chat-pannel">
+          <div class="scrollable">
+
+            <div class="row no-gutters">
+              <div class="col-md-3">
+                <div class="chat-bubble">
+                  Hi friend!
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row no-gutters">
+              <div class="col-md-3 offset-md-9">
+                <div class="chat-bubble">
+                  Hi Prof!
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row no-gutters">
+              <div class="col-md-3">
+                <div class="chat-bubble">
+                  Hi friend!
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-12">
+            <div class="chat-box-tray">
+              <i class="material-icons">sentiment_very_satisfied</i>
+              <input type="text" placeholder="Type your message here...">
+              <i class="material-icons">send</i>
+            </div>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}

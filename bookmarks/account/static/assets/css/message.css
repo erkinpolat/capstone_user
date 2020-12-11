@@ -1,0 +1,173 @@
+$grey: #eee;
+$bubble: #74b9ff;
+
+
+.container {
+  margin: 60px auto;
+  background: #fff;
+  padding: 0;
+  border-radius: 7px;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  
+}
+
+.settings-tray {
+  background-color: $grey;
+  padding: 10px 15px;
+  border-radius: 7px;
+  
+  .no-gutters {
+    padding:0;
+  }
+  
+  &--right{
+    float: right;
+  }
+  
+  i {
+    margin-top: 10px;
+    font-size: 25px;
+    color: grey;
+    margin: 14px;
+    transition: .3s;
+
+    &:hover {
+      color: $bubble;
+      cursor: pointer;
+    }
+  }
+}
+
+.search-box {
+  background: #fafafa;
+  padding: 10px 13px;
+  
+  .input-wrapper {
+    background: #fff;
+    border-radius: 40px;
+    
+    i {
+      color: grey;
+      vertical-align: middle;
+      margin-left: 7px;
+    }
+  }
+}
+
+input {
+  border: none;
+  border-radius: 30px;
+  width: 80%;
+  
+  &::placeholder {
+    color: e3e3e3;
+    font-weight: 300;
+    margin-left: 20px;
+  }
+  
+  &:focus{
+    outline:none;
+  }
+}
+
+.scrollable {
+  height: 480px;
+  overflow-y: scroll;
+}
+
+
+.friend-drawer {
+  padding: 10px 15px;
+  display: flex;
+  vertical-align: baseline;
+  background: #fff;
+  transition: .3s ease;
+  
+  &--grey {
+    background: #eee;
+  }
+  
+  .text {
+    margin-left: 12px;
+    width: 70%;
+  
+    
+    h6 {
+      margin-top: 6px;
+      margin-bottom: 0;
+      
+    }
+    
+    p {
+      margin: 0; 
+    }
+  }
+    
+  .time {
+    color: grey;
+  }
+    
+  &--onhover:hover {
+    background: $bubble;
+    cursor: pointer;
+
+    p,
+    h6,
+    .time {
+      color: #fff;
+    }
+  }
+}
+
+hr {
+  margin: 5px auto;
+  width: 60%;
+}
+
+
+.chat-bubble {
+  padding: 10px 14px;
+  background: #eee;
+  margin:10px 30px;
+  border-radius: 9px;
+  position: relative;
+  animation: fadeIn 1s ease-in;
+}
+
+.offset-md-9 {
+  .chat-bubble {
+    background: $bubble;
+    color: #fff;
+  }
+}
+
+
+.chat-box-tray {
+  background: #eee;
+  display: flex;
+  align-items: baseline;
+  padding: 10px 15px;
+  align-items: center;
+  margin-top: 19px;
+  bottom: 0;
+  
+  input {
+    margin: 0 10px;
+    padding: 6px 2px;
+  }
+  
+  i {
+    color: grey;
+    font-size: 30px;
+    vertical-align: middle;
+    
+    &:last-of-type {
+      margin-left: 25px;
+    }
+  }
+}

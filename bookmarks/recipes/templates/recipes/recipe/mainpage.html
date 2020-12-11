@@ -1,7 +1,65 @@
 {% extends "base.html" %}
+{% load thumbnail %}
 
 {% block title %}Welcome{% endblock %}
 
+{% block styles %}{% endblock %}
+
 {% block content %}
-<div class="iactiveImg" data-ii="20574"></div><script src="https://interactive-img.com/js/include.js"></script>
+    <div class="projects-clean text-center"><div class="container-wrapper-genially" style="position: relative; min-height: 400px; max-width: 100%;"><video class="loader-genially" autoplay="autoplay" loop="loop" playsinline="playsInline" muted="muted" style="position: absolute;top: 45%;left: 50%;transform: translate(-50%, -50%);width: 80px;height: 80px;margin-bottom: 10%"><source src="https://static.genial.ly/resources/panel-loader-low.mp4" type="video/mp4" />Your browser does not support the video tag.</video><div id="5fcbf82134487c74a6da5c6a" class="genially-embed" style="margin: 0px auto; position: relative; height: auto; width: 100%;"></div></div><script>(function (d) { var js, id = "genially-embed-js", ref = d.getElementsByTagName("script")[0]; if (d.getElementById(id)) { return; } js = d.createElement("script"); js.id = id; js.async = true; js.src = "https://view.genial.ly/static/embed/embed.js"; ref.parentNode.insertBefore(js, ref); }(document));</script>
+        <h2 class="d-xl-flex justify-content-xl-center" style="height: 69px;">Click on a region to start exploring!</h1>
+    </div>
+    <hr>
+    <div class="projects-clean">
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">Explore Recipes </h2>
+
+                <p class="text-center">Check out the latest recipes by our users</p>
+            </div>
+            
+            <div class="row projects">
+                {% for recipe in recipes %}
+                    <div class="col-sm-6 col-lg-4 item" data-href="{{ recipe.get_absolute_url }}">
+                        <a href="{{ recipe.get_absolute_url }}">
+                            {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+                            <a href="{{ recipe.get_absolute_url }}">
+                                <img src="{{ im.url }}">
+                            </a>
+                        </a>
+
+                        <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+                        <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+                    </div>    
+                {% endfor %}
+            </div>
+    <div class="projects-clean">
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">Read Articles </h2>
+
+                <p class="text-center">Browse articles about health, diet, cooking tips and more!</p>
+            </div>
+            
+            <div class="row projects">
+                {% for article in articles %}
+                    <div class="col-sm-6 col-lg-4 item" data-href="{{ article.get_absolute_url }}">
+                        <a href="{{ recipe.get_absolute_url }}">
+                            {% thumbnail article.picture 350x250 crop="smart" as im %}
+                            <a href="{{ article.get_absolute_url }}">
+                                <img src="{{ im.url }}">
+                            </a>
+                        </a>
+
+                        <h3 class="name"><a href="{{ article.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ article.title }}</a></h3>
+                        <p class="description">{{ article.description|safe|truncatewords:30|linebreaks }}</p>
+                    </div>    
+                {% endfor %}
+            </div>
+            
+
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

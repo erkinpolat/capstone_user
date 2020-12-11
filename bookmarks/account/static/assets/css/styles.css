@@ -1,0 +1,51 @@
+html, body {
+  height: 100%;
+}
+
+.navbar.navbar-dark.navbar-expand-md.fixed-top.bg-dark {
+  background-color: #000!important;
+  opacity: 0.8;
+}
+
+.nav-link {
+  color: #fff;
+  font-size: 13px;
+}
+
+.navbar-brand.brand-logo {
+  font-size: 25px;
+}
+
+body {
+  padding-top: 65px;
+}
+
+.featured {
+  padding-top: 100px;
+  text-align: center;
+}
+
+#footerpad {
+  padding-top: 70px;
+  padding-bottom: 20px;
+  background-color: #000000;
+  opacity: 0.8;
+}
+
+a:focus, a:hover {
+  color: #0085A1;
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -189px;
+  padding-bottom: 189px;
+}
+
+.footer, .push {
+  height: 189px;
+}
+
+

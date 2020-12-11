@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+    <div class="article-dual-column">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <div class="intro">
+                        <div>
+                        <h1 class="text-center">{{ recipe.title }}</h1>
+                        
+                        </div>
+                        <p class="text-center"><span class="by">by</span> <a href="{% url 'other_profile' recipe.user.id %}">{{ recipe.user.first_name|title }} {{ recipe.user.last_name|title }}</a><span class="date">{{ recipe.created }} </span></p>
+                        <p class="text-center">{{ recipe.country }}, <a href="{{recipe.region.get_absolute_url}}">{{ recipe.region }}</a>
+
+                        {% if diet != "None" %}
+                            | {{ diet }}
+                        {% endif %}
+                        </p>
+
+                        {% if recipe.picture %}
+                        {% load thumbnail %}
+                            <a href="{{ recipe.picture.url }}">
+                                <img class="img-fluid mx-auto d-block" src="{% thumbnail recipe.picture 0x500 %}" class="image-detail">
+                            </a>    
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 50px;">
+                    {% with total_likes=recipe.users_like.count users_like=recipe.users_like.all %}
+                        <div>
+                            
+                            {% if request.user.is_authenticated %}
+                                {% if request.user not in users_like %}
+                                    <form id="{{ user.id }}" action= "{% url 'recipes:detail' recipe.id recipe.slug %}" method="post">
+                                        {% csrf_token %}    
+                                            <input type="hidden" name="title" value="like"/>
+                                            <button class="btn btn-dark" type="submit">Like ({{ total_likes }})</button>
+                                    </form>
+
+                                {% else %}
+                                    <form id="{{ user.id }}" action= "{% url 'recipes:detail' recipe.id recipe.slug %}" method="post">
+                                        {% csrf_token %}    
+                                            <input type="hidden" name="title" value="unlike"/>
+                                            <button class="btn btn-dark" type="submit">Unlike ({{ total_likes }})</button>
+                                    </form>
+
+                                {% endif %}
+                            {% endif %}
+                    
+                        </div>
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-lg-3 offset-md-1">
+                    <div class="toc">
+                        <p>Ingredients</p>
+                        <ul>
+                            {% for ingredient in ingredients %}
+                                <li><p>{{ ingredient }}</p></li>
+                            {% endfor %}
+                        </ul>
+                        <p><em>Prepare Time: {{ recipe.prep_time }} mins</em></p>
+                    </div>
+                </div>
+                <div class="col-md-10 col-lg-7 offset-md-1 offset-lg-0">
+                    <div class="text">
+                        <p style="white-space: normal;">{{ recipe.description|safe }}</p>
+                        <h2>Steps </h2>
+                        <ul>
+                            {% for step in steps %}
+                                <p>{{ forloop.counter }}. {{ step }}</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-dual-column">
+        {% with comments.count as total_comments %}
+            <h2>
+                {{ total_comments }} comment{{ total_comments|pluralize }}
+            </h2>
+        {% endwith %}
+
+        {% for comment in comments %}
+            <div class="comment">
+                <div class="intro">
+                    <p class="info">
+                        <a href="{% url 'other_profile' comment.user.id %}">{{ comment.user.first_name|title }} {{ comment.user.last_name|title }}</a> on {{ comment.created }}
+                    </p>
+                    <h3>{{ comment.body|linebreaks }}</h3>
+                </div>
+
+            </div>
+
+        {% empty %}
+            <p>There are no comments yet.</p>
+        {% endfor %}
+
+        {% if new_comment %}
+            <h2>Your comment has been added</h2>
+        {% else %}
+            <h2>Add new comment</h2>
+            <form method="post">
+                {{ comment_form.as_p }}
+                {% csrf_token %}
+                <p><input type="hidden" name="comment" value="Add comment"></p>
+                <button class="btn btn-dark" type="submit">Add a Comment!</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
