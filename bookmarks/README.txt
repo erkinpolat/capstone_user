@@ -1,6 +1,3 @@
-You can watch this video for a walkthrough of the website: 
-This is a link to my GitHub repo for the project
-
 * To Run the Project:
 
 Set your directory to the folder called bookmarks
