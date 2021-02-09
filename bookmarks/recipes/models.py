@@ -5,6 +5,13 @@ from django.urls import reverse
 from ckeditor.fields import RichTextField
 # Create your models here.
 
+
+class CookBook(models.Model):
+	title = models.TextField()
+
+	def __str__(self):
+		return self.name
+
 class Recipe(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipes_created', on_delete=models.CASCADE)
 	title = models.CharField(max_length = 200)

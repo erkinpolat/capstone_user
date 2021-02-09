@@ -24,6 +24,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('recipes/', include('recipes.urls', namespace='recipes')),
     path('', lambda request: redirect('recipes/welcome/', permanent=False)),
+    path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

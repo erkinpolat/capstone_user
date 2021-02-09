@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'easy_thumbnails',
     'ckeditor',
+    'channels',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bookmarks.wsgi.application'
+ASGI_APPLICATION = 'bookmarks.routing.application'
 
 
 # Database
@@ -122,6 +125,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
