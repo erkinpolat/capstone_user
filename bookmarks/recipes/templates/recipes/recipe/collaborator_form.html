@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+
+    <form method="GET" action=".">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Username..." />
+                    <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </span>
+                </div>
+            </div>        
+        </div>        
+    </form>
+    <form method="POST" action=".">
+        {% csrf_token %}
+        <div class="users">
+            <ul style="list-style-type:none;">
+                {% for user in users %}
+                    <li>
+                        <div class="card">
+                            <div class="card-body text-center"><img class="rounded-circle" src="{{ user.profile.photo.url }}" style="width: 120px;" />
+                            <p>{{user.first_name}} {{ user.last_name }}</p>
+                            <button type="submit" class="btn btn-primary" name="add_user" value="{{ user.id }}">Add Collaborator</button>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </form>
+
+{% endblock %}

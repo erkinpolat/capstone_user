@@ -1,11 +1,18 @@
 from django.contrib import admin
-from .models import Recipe, Diet, Region, Article, Category, RecipeComment, ArticleComment
+from .models import Recipe, Diet, Region, Article, Category, RecipeComment, ArticleComment, CookBook
 # Register your models here.
+
+
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
 	list_display = ['title', 'slug', 'picture', 'created', 'diet', 'region', 'prep_time']
 	list_filter = ['created']
+
+@admin.register(CookBook)
+class CookBookAdmin(admin.ModelAdmin):
+	list_display = ['title', 'slug']
+
 
 @admin.register(Diet)
 class DietAdmin(admin.ModelAdmin):

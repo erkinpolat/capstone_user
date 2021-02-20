@@ -111,3 +111,59 @@
   color: inherit;
 }
 
+.notebookholder
+{
+  position: relative; 
+  left: 0; 
+  top: 0; 
+  width: 121;
+  height: 200;
+}
+
+.imageholder
+{
+  position: absolute;
+  top: 25px;
+
+  height: 50px;
+  width: 121px;
+  object-fit: cover;
+}
+
+.fishes
+{
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 200;
+  width: auto;
+
+}
+.fish
+{
+  position: relative;
+  height: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+
+}
+
+.resize
+{
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top:90px;
+  left: 22px;
+}
+
+.resize p
+{
+  font-family: "Papyrus", fantasy;
+  font-size: 1em;
+  text-align:center; 
+  vertical-align: middle;
+
+}

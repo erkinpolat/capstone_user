@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}Messages{% endblock %}
+
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+	<form class="d-flex align-items-center" method="get">
+	  <i class="fas fa-search d-none d-sm-block h4 text-body m-0"></i>
+	  <input class="form-control form-control-lg flex-shrink-1 form-control-borderless" type="text" placeholder="Search Users" name="query">
+	  <button class="btn btn-dark btn-lg" type="submit">Search</button>
+	</form>
+
+	<div class="users">
+	    <ul style="list-style-type:none;">
+	        {% for user in queryset %}
+	            <li>
+	                <div class="card">
+	                    <a href="{% url 'other_profile' user.id %}">
+		                    <div class="card-body text-center"><img class="rounded-circle" src="{{ user.profile.photo.url }}" style="width: 120px;" />
+		                    <p>{{user.first_name}} {{ user.last_name }}</p>
+		                    </div>
+	                	</a>
+	                </div>
+	            </li>
+	        {% endfor %}
+	    </ul>
+	</div>
+{% endblock %}

@@ -10,7 +10,7 @@
                     {% if section == "articles" %}
                         <a class="btn btn-dark" href="{% url 'recipes:article_create' %}">Write</a>
                     {% else %}
-                        <a class="btn btn-dark" href="{% url 'recipes:create' %}">Write</a>
+                        <a class="btn btn-dark" href="{% url 'recipes:cookbook_create' %}">Create a CookBook</a>
                     {% endif %}
                  </h2>
             </div>
@@ -27,6 +27,20 @@
 
                         <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
                         <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+                    </div>    
+                {% endfor %}
+
+                {% for cookbook in cookbooks %}
+                    <div class="col-sm-6 col-lg-4 item" data-href="{{ cookbook.get_absolute_url }}">
+                        <a href="{{ cookbook.get_absolute_url }}">
+                            {% thumbnail cookbook.template 200x0 crop="smart" as im %}
+                            <a href="{{ cookbook.get_absolute_url }}">
+                                <img src="{{ im.url }}">
+                            </a>
+                        </a>
+
+                        <h3 class="name"><a href="{{ cookbook.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ cookbook.title }}</a> by {{ cookbook.user.first_name | title}}</h3>
+                        <p class="description">{{ cookbook.description|safe|truncatewords:30|linebreaks }}</p>
                     </div>    
                 {% endfor %}
             </div>

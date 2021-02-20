@@ -1,0 +1,59 @@
+{% load thumbnail %}
+
+<div class="projects-clean">
+        <div class="container">
+            <div class="intro">
+                <h2 class="text-center">
+
+                    Explore {{ section|title }}
+
+                    {% if section == "articles" %}
+                        <a class="btn btn-dark" href="{% url 'recipes:article_create' %}">Write</a>
+                    {% else %}
+                        <a class="btn btn-dark" href="{% url 'recipes:create' %}">Write</a>
+                    {% endif %}
+                 </h2>
+            </div>
+            
+            <div class="row projects">
+                <div class="notebooks">
+                    {% for cookbook in cookbooks %}
+                        <div class="col-sm-6 col-lg-4 item" data-href="{{ cookbook.get_absolute_url }}">
+                            <a href="{{ recipe.get_absolute_url }}">
+                                {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+                                <a href="{{ recipe.get_absolute_url }}">
+                                    <img src="{{ im.url }}">
+                                </a>
+                            </a>
+
+                            <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+                            <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+                        </div>  
+
+      
+                    {% endfor %}
+
+                    <div class="notebookholder">
+                      <img src="/media/cookbook/template.png" class="fishes"/>
+                      <div class="imageholder">
+                        <img src="https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="fish"/>
+                      </div>
+                      <div class="resize"><p>Horizontal Image</p> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+
+
+<div class="notebookholder">
+    <img src="/media/cookbook/template.png" class="fishes"/>
+    <div class="imageholder">
+        <img src="https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="fish"/>
+    </div>
+    <div class="resize"><p>Horizontal Image</p> </div>
+</div>
+
+

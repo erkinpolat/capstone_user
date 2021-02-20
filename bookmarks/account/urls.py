@@ -20,5 +20,6 @@ urlpatterns = [
 	path('register/', views.register, name='register'),
 	path('edit/', views.edit, name='edit'),
 	path('messages/', views.messages, name='messages'),
+	path('search_users/', views.user_search, name='search_users'),
 ]
 

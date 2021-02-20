@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}New CookBook{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+	<h1>Add new CookBook</h1>
+	<form method="post" enctype="multipart/form-data">
+		{{ form.media }}
+		{{ form.as_p }}
+		{% csrf_token %}
+		<input type="submit" value="Upload">
+	</form>
+{% endblock %}

@@ -5,9 +5,10 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 from django.contrib.auth import get_user_model
-from recipes.models import Recipe, Article
+from recipes.models import Recipe, Article, CookBook
 from common.decorators import ajax_required
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 
 # Create your views here.
 
@@ -22,21 +23,24 @@ def dashboard(request):
 def profile(request):
 	profile = get_object_or_404(Profile, user=request.user)
 	recipes = get_user_objects(user=request.user, model=Recipe)
+	cookbooks = request.user.cookbooks_collaborating.all()
 	articles = get_user_objects(user=request.user, model=Article)
 	following = request.user.following.all()
-	return render(request, 'account/profile.html', {'section': 'profile', 'recipes': recipes, 'articles': articles, 'following': following})
+	return render(request, 'account/profile.html', {'section': 'profile', 'cookbooks': cookbooks, 'recipes': recipes, 'articles': articles, 'following': following})
 
 
 def other_profile(request, user_id):
 	if request.user.id == user_id:
 		user = get_object_or_404(User, id = user_id)
+		cookbooks = user.cookbooks_collaborating.all()
 		recipes = get_user_objects(user=user, model=Recipe)
 		articles = get_user_objects(user=user, model=Article)
 		following = user.following.all()
-		return render(request, 'account/profile.html', {'recipes': recipes, 'articles': articles, 'following': following})
+		return render(request, 'account/profile.html', {'section': 'profile', 'cookbooks': cookbooks, 'recipes': recipes, 'articles': articles, 'following': following})
 	else:
 		if request.method == "POST":
 			user = get_object_or_404(User, id = user_id)
+			cookbooks = user.cookbooks_collaborating.all()
 			recipes = get_user_objects(user=user, model=Recipe)
 			articles = get_user_objects(user=user, model=Article)
 			following = user.following.all()
@@ -49,15 +53,16 @@ def other_profile(request, user_id):
 					followed_user.followers.add(request.user)
 				else:
 					followed_user.followers.remove(request.user)
-				return render(request, 'account/generic_profile.html', {'section': 'profile', 'user': user, 'recipes': recipes, 'articles': articles, 'following': following})
+				return render(request, 'account/generic_profile.html', {'section': 'profile', 'cookbooks': cookbooks, 'user': user, 'recipes': recipes, 'articles': articles, 'following': following})
 
 		else:
 		
 			user = get_object_or_404(User, id = user_id)
+			cookbooks = user.cookbooks_collaborating.all()
 			recipes = get_user_objects(user=user, model=Recipe)
 			articles = get_user_objects(user=user, model=Article)
 			following = user.following.all()
-			return render(request, 'account/generic_profile.html', {'section': 'profile', 'user': user, 'recipes': recipes, 'articles': articles, 'following': following})
+			return render(request, 'account/generic_profile.html', {'section': 'profile', 'cookbooks': cookbooks, 'user': user, 'recipes': recipes, 'articles': articles, 'following': following})
 
 
 '''@login_required
@@ -144,4 +149,26 @@ def get_user_objects(user, model):
 
 @login_required
 def messages(request):
-	return render(request, 'account/messages.html')
+	return render(request, 'account/messages.html', {})
+
+def user_search(request):
+	if request.GET:
+		search = request.GET.get('query')
+		queries = search.split(" ")
+
+		queryset=[]
+
+		User = get_user_model()
+
+		users = User.objects.all()
+
+		for q in queries:
+			matching_users = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q)).distinct()
+
+			for post in matching_users:
+				if post.id != request.user.id:
+					queryset.append(post)
+
+		return render(request, 'account/user_search.html', {'queryset': queryset})
+
+	return render(request, 'account/user_search.html', {})

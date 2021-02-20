@@ -38,17 +38,39 @@
 	
 	<div class="projects-clean">
 	    <ul class="nav nav-tabs nav-fill text-center">
-	        <li class="nav-item"><a class="nav-link text-black-50 active" role="tab" data-toggle="tab" href="#tab-1">Recipes ({{ recipes|length }})</a></li>
-	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-2">Articles ({{ articles|length }})</a></li>
-	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-3">Followers ({{ request.user.profile.followers.count }})</a></li>
-	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-4">Following ({{ following|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50 active" role="tab" data-toggle="tab" href="#tab-1">CookBooks ({{ cookbooks|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-2">Recipes ({{ recipes|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-3">Articles ({{ articles|length }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-4">Followers ({{ request.user.profile.followers.count }})</a></li>
+	        <li class="nav-item"><a class="nav-link text-black-50" role="tab" data-toggle="tab" href="#tab-5">Following ({{ following|length }})</a></li>
 	    </ul>
 	    <div class="tab-content" style="padding-top: 50px">
 	        <div class="tab-pane active" role="tabpanel" id="tab-1">
 	            <div class="row projects">
+	                {% if not cookbooks %}
+	                	<p style="padding-left: 50px;">You don't have any CookBooks yet.</p>
+	                	<a class="btn btn-dark" href="{% url 'recipes:cookbook_create' %}" style="margin-left: 30px">Start Writing</a>
+	                {% endif %}
+
+	                {% for cookbook in cookbooks %}
+	                    <div class="col-sm-6 col-lg-4 item" data-href="{{ cookbook.get_absolute_url }}">
+	                        <a href="{{ cookbook.get_absolute_url }}">
+	                            {% thumbnail cookbook.template 200x0 crop="smart" as im %}
+	                            <a href="{{ cookbook.get_absolute_url }}">
+	                                <img src="{{ im.url }}">
+	                            </a>
+	                        </a>
+
+	                        <h3 class="name"><a href="{{ cookbook.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ cookbook.title }}</a></h3>
+	                        <p class="description">{{ cookbook.description|safe|truncatewords:30|linebreaks }}</p>
+	                    </div>    
+	                {% endfor %}
+	            </div>
+	        </div>
+	        <div class="tab-pane" role="tabpanel" id="tab-2">
+	            <div class="row projects">
 	                {% if not recipes %}
 	                	<p style="padding-left: 50px;">You don't have any recipes yet.</p>
-	                	<a class="btn btn-dark" href="{% url 'recipes:create' %}" style="margin-left: 30px">Start Writing</a>
 	                {% endif %}
 
 	                {% for recipe in recipes %}
@@ -66,7 +88,7 @@
 	                {% endfor %}
 	            </div>
 	        </div>
-	        <div class="tab-pane" role="tabpanel" id="tab-2">
+	        <div class="tab-pane" role="tabpanel" id="tab-3">
 	            <div class="row projects">
 
 	            	{% if not articles %}
@@ -89,7 +111,7 @@
 	                {% endfor %}
 	            </div>
 	        </div>
-	        <div class="tab-pane" role="tabpanel" id="tab-3">
+	        <div class="tab-pane" role="tabpanel" id="tab-4">
 	            
 	            <div class="row projects">
 	            	<div class="col-sm-6 col-lg-4 item">
@@ -105,7 +127,7 @@
 			    </div>
 
 	        </div>
-	        <div class="tab-pane" role="tabpanel" id="tab-4">
+	        <div class="tab-pane" role="tabpanel" id="tab-5">
 	            
 	            <div class="row projects">
 	            	<div class="col-sm-6 col-lg-4 item">

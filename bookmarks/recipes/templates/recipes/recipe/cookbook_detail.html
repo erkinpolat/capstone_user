@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}{{ cookbook.title }}{% endblock %}
+
+{% block styles %}<link rel="stylesheet" href="{% static 'assets/css/cookbook.css' %}">{% endblock %}
+
+{% block content %}
+
+
+    <div class="article-dual-column">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <div class="intro">
+                        <div>
+                        <h1 class="text-center">{{ cookbook.title }}</h1>
+                        
+                        </div>
+                        <p class="text-center"><span class="by">Created by</span> <a href="{% url 'other_profile' cookbook.user.id %}">{{ cookbook.user.first_name|title }} {{ cookbook.user.last_name|title }}</a><span class="date">{{ cookbook.created }} </span></p>
+
+
+                        {% load thumbnail %}
+                            <a href="{{ cookbook.template.url }}">
+                                <img class="img-fluid mx-auto d-block" src="{% thumbnail cookbook.template 0x500 %}" class="image-detail">
+                            </a>    
+                    </div>
+                    
+                </div>
+
+            </div>
+            <hr>
+            {% if request.user in collaborators %}
+                <a class="btn btn-dark" href="{% url 'recipes:create' id=cookbook.id slug=cookbook.slug %}">Add New Recipe to CookBook</a>
+                <a class="btn btn-dark" href="{% url 'recipes:add_collaborator' id=cookbook.id slug=cookbook.slug %}">Add Collaborator</a>
+            {% endif %}
+
+
+            <br><br><br>
+            <div class="row">
+                
+                {% for recipe in recipes %}
+                    <div class="col-sm-6 col-lg-4 item" data-href="{{ recipe.get_absolute_url }}">
+                        <a href="{{ recipe.get_absolute_url }}">
+                            {% thumbnail recipe.picture 350x250 crop="smart" as im %}
+                            <a href="{{ recipe.get_absolute_url }}">
+                                <img src="{{ im.url }}">
+                            </a>
+                        </a>
+
+                        <h3 class="name"><a href="{{ recipe.get_absolute_url }}" style="text-decoration: none; color:inherit;">{{ recipe.title }}</a></h3>
+                        <p class="description">{{ recipe.description|safe|truncatewords:30|linebreaks }}</p>
+                    </div>    
+                {% endfor %}
+            </div>
+            <hr>
+            <div class="row">
+                
+                {% for person in collaborators %}
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a href="{% url 'other_profile' cookbook.user.id %}">
+                                <img class="rounded-circle" src="{{ person.profile.photo.url }}" style="width: 120px;" />
+                                <p>{{person.first_name | title}} {{ person.last_name | title}}</p>
+                            </a>
+                        </div>
+                    </div>
+ 
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock %}

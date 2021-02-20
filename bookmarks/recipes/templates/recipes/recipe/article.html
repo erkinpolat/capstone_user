@@ -15,6 +15,7 @@
                         
                         </div>
                         <p class="text-center"><span class="by">by</span> <a href="{% url 'other_profile' recipe.user.id %}">{{ recipe.user.first_name|title }} {{ recipe.user.last_name|title }}</a><span class="date">{{ recipe.created }} </span></p>
+                        <p class="text-center">in CookBook: <a href="{{recipe.cookbook.get_absolute_url}}">{{ recipe.cookbook }}</a>
                         <p class="text-center">{{ recipe.country }}, <a href="{{recipe.region.get_absolute_url}}">{{ recipe.region }}</a>
 
                         {% if diet != "None" %}

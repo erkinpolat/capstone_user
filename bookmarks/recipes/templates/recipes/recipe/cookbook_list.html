@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Recipe Hub{% endblock %}
+
+{% block styles %}<link rel="stylesheet" href="{% static 'assets/css/cookbook.css' %}">{% endblock %}
+
+{% block content %}
+	<div class="row">
+	    <div class="col-md-1"></div>
+	    <div class="col-md-8 col-xl-8 offset-md-1 offset-xl-0" style="width: 990px;">
+	        <div class="card m-auto" style="max-width: 850px;">
+	            <div class="card-body">
+	                <form class="d-flex align-items-center" method="get">
+	                	<i class="fas fa-search d-none d-sm-block h4 text-body m-0"></i>
+	                	<input class="form-control form-control-lg flex-shrink-1 form-control-borderless" type="text" placeholder="Search in {{ section|title }}" name="q">
+	                	<button class="btn btn-dark btn-lg" type="submit">Search</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-md-3 d-xl-flex justify-content-xl-center align-items-xl-center">
+	        <div>
+	            <button class="btn btn-dark dropdown-toggle dropdown-toggle-split text-truncate" data-toggle="dropdown" aria-expanded="false" type="button">Browse by {{ browse_key }}&nbsp;</button>
+	                <div class="dropdown-menu" role="menu">
+	                	{% for item in browse %}
+	                		<a class="dropdown-item" role="presentation" href="{{ item.get_absolute_url }}">{{ item }}</a>
+	                	{% endfor %}
+	                </div>
+	        </div>
+	    </div>
+	</div>
+
+
+	<div id="image-list">
+		{% include "recipes/recipe/cookbook_list_ajax.html" %}
+	</div>
+
+	<script>
+	  var autoSizeText;
+
+	  autoSizeText = function() {
+	    var el, elements, _i, _len, _results;
+	    elements = $('.resize');
+	    console.log(elements);
+	    if (elements.length < 0) {
+	      return;
+	    }
+	    _results = [];
+	    for (_i = 0, _len = elements.length; _i < _len; _i++) {
+	      el = elements[_i];
+	      _results.push((function(el) {
+	        var resizeText, _results1;
+	        resizeText = function() {
+	          var elNewFontSize;
+	          elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+	          return $(el).css('font-size', elNewFontSize);
+	        };
+	        _results1 = [];
+	        while (el.scrollHeight > el.offsetHeight) {
+	          _results1.push(resizeText());
+	        }
+	         return _results1;
+	      })(el));
+	    }
+	    return _results;
+	  };
+
+	  $(document).ready(function() {
+	    return autoSizeText();
+	  });
+	</script>
+{% endblock %}
+
+{% block domready %}
+	var page = 1;
+	var empty_page = false; 
+	var block_request = false;
+
+	$(window).scroll(function() {
+		var margin = $(document).height() - $(window).height() - 200; 
+		if($(window).scrollTop() > margin && empty_page == false && 
+		block_request == false) {
+			block_request = true;
+				page += 1;
+				$.get('?page=' + page, function(data) {
+					if(data == '') { 
+						empty_page = true;
+					}					
+					else {
+						block_request = false;
+						$('#image-list').append(data); 
+					}
+				}); 
+			}
+     	});
+{% endblock %}
+

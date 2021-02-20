@@ -1,5 +1,5 @@
 from django import forms
-from .models import Recipe, Article, RecipeComment, ArticleComment
+from .models import Recipe, Article, RecipeComment, ArticleComment, CookBook
 
 class RecipeCreateForm(forms.ModelForm):
 	class Meta:
@@ -11,6 +11,13 @@ class ArticleCreateForm(forms.ModelForm):
 	class Meta:
 		model = Article
 		fields = ('title', 'category', 'picture', 'description')
+
+
+
+class CookBookCreateForm(forms.ModelForm):
+	class Meta:
+		model = CookBook
+		fields = ('title', 'picture', 'description')
 
 
 class RecipeCommentForm(forms.ModelForm):

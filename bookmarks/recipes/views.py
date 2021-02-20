@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import RecipeCreateForm, ArticleCreateForm, RecipeCommentForm, ArticleCommentForm
-from .models import Recipe, Diet, Region, Article, Category
+from .forms import RecipeCreateForm, ArticleCreateForm, CookBookCreateForm, RecipeCommentForm, ArticleCommentForm
+from .models import Recipe, Diet, Region, Article, Category, CookBook
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
@@ -11,11 +11,14 @@ from common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+
 
 
 # Create your views here.
 @login_required
-def recipe_create(request):
+def recipe_create(request, id, slug):
 	if request.method == 'POST':
 		form = RecipeCreateForm(data = request.POST, files=request.FILES)
 		if form.is_valid():
@@ -23,6 +26,9 @@ def recipe_create(request):
 			new_item = form.save(commit=False)
 
 			new_item.user = request.user
+
+			cookbook = get_object_or_404(CookBook, id=id, slug=slug)
+			new_item.cookbook = cookbook
 			new_item.save()
 
 			#messages.success(request, 'Recipe added successfully')
@@ -47,6 +53,28 @@ def article_create(request):
 		form = ArticleCreateForm()
 
 	return render(request, 'recipes/recipe/article_create.html', {'form': form})
+
+@login_required
+def cookbook_create(request):
+	if request.method == 'POST':
+		form = CookBookCreateForm(data = request.POST, files=request.FILES)
+		if form.is_valid():
+			#cd = form.cleaned_data
+			new_item = form.save(commit=False)
+
+			new_item.user = request.user
+
+			new_item.save()
+			new_item.collaborators.add(request.user)
+			new_item.save()
+
+			#messages.success(request, 'Recipe added successfully')
+
+			return redirect(new_item.get_absolute_url())
+	else:
+		form = CookBookCreateForm()
+
+	return render(request, 'recipes/recipe/cookbook_create.html', {'section': 'recipes', 'form': form})
 
 def recipe_detail(request, id, slug):
 	recipe = get_object_or_404(Recipe, id=id, slug=slug)
@@ -126,6 +154,17 @@ def article_detail(request, id, slug):
 	return render(request, 'recipes/recipe/nonrecipearticle.html', {'section': 'recipes', 'article': article, 'comments': comments, 'comment_form': comment_form})
 
 
+def cookbook_detail(request, id, slug):
+	cookbook = get_object_or_404(CookBook, id=id, slug=slug)
+
+	recipes = cookbook.recipes_in_cookbook.all()
+	collaborators = cookbook.collaborators.all()
+
+	print(collaborators)
+
+	return render(request, 'recipes/recipe/cookbook_detail.html', {'section': 'recipes', 'cookbook': cookbook, 'recipes': recipes, 'collaborators': collaborators})
+
+
 
 class PostListView(ListView):
 	queryset = Recipe.objects.all()
@@ -156,6 +195,37 @@ def mainpage(request):
 	recipes = Recipe.objects.order_by('-created')[:6]
 	articles = Article.objects.order_by('-created')[:6]
 	return render(request, 'recipes/recipe/mainpage.html', {'recipes': recipes, 'articles': articles})
+
+def cookbook_list(request):
+	query=""
+
+	if request.GET:
+		query = request.GET['q']
+		cookbooks = get_query_set(CookBook, str(query))
+	else:
+		cookbooks = CookBook.objects.all()
+
+
+	regions = Region.objects.all()
+
+	paginator = Paginator(cookbooks, 6)
+	page = request.GET.get('page')
+	try:
+		cookbooks = paginator.page(page)
+	except PageNotAnInteger:
+		cookbooks = paginator.page(1)
+	except EmptyPage:
+		#if the response is ajax don't do anything
+		if request.is_ajax():
+			return HttpResponse('')
+		#if page is out of range deliver last page of results
+		cookbooks = paginator.page(paginator.num_pages)
+	if request.is_ajax():
+		return render(request, 'recipes/recipe/list_ajax.html', {'section': 'recipes', 'cookbooks': cookbooks, 'browse': regions, 'browse_key': "Region"})
+	return render(request, 'recipes/recipe/list.html', {'section': 'recipes', 'cookbooks': cookbooks, 'browse': regions, 'browse_key': "Region"})
+
+
+
 
 
 def recipe_list(request, region_slug=False):
@@ -237,5 +307,46 @@ def get_query_set(model, query=None):
 			queryset.append(post)
 
 	return list(set(queryset))
+
+def BootstrapFilterView(request, id, slug):
+	cookbook = get_object_or_404(CookBook, id=id, slug=slug)
+	collaborators = cookbook.collaborators.all()
+	
+	if request.GET:
+		title_contains = request.GET.get('title_contains')
+		queries = title_contains.split(" ")
+
+		queryset=[]
+
+		User = get_user_model()
+
+		users = User.objects.all()
+
+		for q in queries:
+			posts = User.objects.filter(Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q)).distinct()
+
+			for post in posts:
+				if post not in collaborators:
+					queryset.append(post)
+
+
+
+		return render(request, "recipes/recipe/collaborator_form.html", {'users': queryset})
+
+	elif request.POST:
+		user_id = request.POST.get('add_user')
+
+		User = get_user_model()
+		user = User.objects.filter(id=user_id)[0]
+
+		cookbook.collaborators.add(user)
+
+		
+
+		return HttpResponseRedirect(reverse('recipes:cookbook_detail', args=[id, slug]))
+
+
+
+	return render(request, "recipes/recipe/collaborator_form.html", {})
 
 
