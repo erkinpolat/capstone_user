@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+
+{% block title %}Messages{% endblock %}
+
+
+{% block styles %}{% load static %}<link rel="stylesheet" href="{% static 'assets/css/message.css' %}">{% endblock %}
+
+{% block content %}
+
+  <form action="{% url 'search_users' %}" style="padding-top: 20px">
+      <button class="btn btn-dark btn-lg" type="submit">Search for Users</button>
+  </form>
+
+
+
+  <div class="container" style="padding-top: 50px;">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        
+        
+        
+        <div class="scrollable">
+          {% for conversation in conversations %}
+            {% with lastmessage=conversation.messages_in_chat.last %}
+              <a style="text-decoration: none; color: black;" href="{% url 'chat:messages_id' conversation.id %}">
+                <div class="friend-drawer friend-drawer--onhover">
+                  <img class="profile-image" src="{{ conversation.cookbook.picture.url }}">
+                  <div class="text">
+                    <h6>{{ conversation.cookbook.title }}</h6>
+                    
+                    <p>{{ lastmessage.content|truncatechars:30 }}</p>
+                  </div>
+                  <span class="time small">{{ lastmessage.timestamp|date:"G:i" }}</span>
+                </div>
+              </a>
+              <hr>
+            {% endwith %}
+          {% endfor %}
+
+        </div>
+      
+      
+      </div>
+      
+      
+      
+      
+      <div class="col-md-8">
+        
+        <div class="settings-tray">
+          <div class="friend-drawer no-gutters friend-drawer--grey">
+            <img class="profile-image" src="{{ chat.cookbook.picture.url }}">
+            <div class="text">
+              <h6>{{ chat.cookbook.title }}</h6>
+              <p>
+                {{ chat.description }} 
+                <br> 
+                Go to the cookbook page for <a href="{{ chat.cookbook.get_absolute_url }}">{{ chat.cookbook.title }}</a>
+              </p>
+            </div>
+            
+          </div>
+        </div>
+        
+        <div class="chat-pannel">
+            <div class="scrollable">
+
+              {% for message in messages %}
+                {% if request.user == message.author %}
+
+                  <div class="row no-gutters">
+                    <div class="col-md-3 offset-md-9">
+                      <div class="chat-bubble">
+                        {{ message.author.first_name|title }} {{ message.author.last_name|title }}: {{ message.content }}
+                      </div>
+                    </div>
+                  </div>
+
+                {% else %}
+                  <div class="row no-gutters">
+                    <div class="col-md-3">
+                      <div class="chat-bubble">
+                        {{ message.author.first_name|title }} {{ message.author.last_name|title }}: {{ message.content }}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
+              {% endfor %}
+
+            </div>
+          </div>
+        
+          <div class="row">
+            <div class="col-12">
+              <div class="chat-box-tray">
+                <form method="post" action="#" style="padding-top: 20px">
+                  {% csrf_token %}
+                    <div class="row">
+                      <input type="text" name="message_content" placeholder="Type your message here...">
+                      <button class="btn btn-dark btn-lg" type="submit">Send</button>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

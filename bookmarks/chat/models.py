@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.db import models
 from recipes.models import CookBook
+from django.urls import reverse
 
 # Create your models here.
 
@@ -25,3 +26,6 @@ class Chat(models.Model):
 	users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='users_chats', blank=True)
 	description = models.TextField()
 	cookbook = models.OneToOneField(CookBook, related_name='related_chat', on_delete = models.CASCADE)
+
+	def get_absolute_url(self):
+		return reverse('chat:messages_id', args=[self.id])
