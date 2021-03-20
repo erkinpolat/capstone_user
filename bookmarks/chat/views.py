@@ -1,18 +1,23 @@
 from django.shortcuts import render, redirect
 from .models import Message, Chat
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-def index(request):
-	return render(request, 'index.html', {})
-
-def room(request, room_name):
-	return render(request, 'room.html', {
-		'room_name': room_name
-	})
-
+@login_required
 def messages(request, id=None):
+	'''
+	function to display the messages page. Gets post requests to send messages by writing the m in the database.
+
+	Args:
+		request
+		id: id of the chat
+
+	Returns: 
+		renders the messages.html file with a given chat context
+	'''
+
 	conversations = request.user.users_chats.all()
 
 	if id:

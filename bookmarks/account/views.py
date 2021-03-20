@@ -16,11 +16,17 @@ User = get_user_model()
 
 @login_required
 def dashboard(request):
+	'''
+	View function to redirect the user to a dashboard upon login
+	'''
 	profile = get_object_or_404(Profile, user=request.user)
 	return render(request, 'account/dashboard.html', {'section': 'dashboard', 'profile': 'profile'})
 
 @login_required
 def profile(request):
+	'''
+	Function to render a profile. Currently replaced with the next function
+	'''
 	profile = get_object_or_404(Profile, user=request.user)
 	recipes = get_user_objects(user=request.user, model=Recipe)
 	cookbooks = request.user.cookbooks_collaborating.all()
@@ -29,7 +35,20 @@ def profile(request):
 	return render(request, 'account/profile.html', {'section': 'profile', 'cookbooks': cookbooks, 'recipes': recipes, 'articles': articles, 'following': following})
 
 
+@login_required
 def other_profile(request, user_id):
+	'''
+	View function to load and display profiles. Compares the inputted user_id to the id of the request.user. If they are the same
+	renders the html for users own profile. If they are different renders the template for another persons profile and allows following 
+	or stopping following other people upon POST request. Following data is received through POST['title']
+
+	Args:
+		request
+		user_id: Id of the user associated with the taret profile
+
+	Returns:
+		rendered template for the profile
+	'''
 	if request.user.id == user_id:
 		user = get_object_or_404(User, id = user_id)
 		cookbooks = user.cookbooks_collaborating.all()
@@ -85,6 +104,14 @@ def follow_user(request):
 
 
 def user_login(request):
+	'''
+	Function to perform user authentication. Receives data from the LoginForm with a POST request. 
+	Uses Django's own authentication function to perform the authentication and uses salted hashes for the passwords
+	Therefore is much secure that storing the password directly in a database.
+
+	Returns:
+		HTTP request based on the state of the login or renders the empty login form
+	'''
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
 		if form.is_valid():
@@ -103,6 +130,14 @@ def user_login(request):
 	return render(request, 'account/login.html', {'form': form})
 
 def register(request):
+	'''
+	Function to register a new user. Gets the data from the UserRegistrationForm via a POST request.
+	Saves the password seperately with set_password() method to offer more security and encrypt the password.
+	Upon registration, creates a profile instance for the user and sets the default profile picture to the profile.
+
+	Returns:
+		User registration form or the profile page of the new user
+	'''
 	if request.method == 'POST':
 		user_form = UserRegistrationForm(request.POST)
 		if user_form.is_valid():
@@ -125,6 +160,13 @@ def register(request):
 
 @login_required
 def edit(request):
+	'''
+	View function to handle the editing of the profiles. Receives the data from the UserEditForm and ProfileEditForm via a POST request.
+	Updates the profiles.
+
+	Returns:
+		The profile update form page
+	'''
 	if request.method == 'POST':
 		user_form = UserEditForm(instance=request.user, data=request.POST)
 		profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
@@ -140,6 +182,10 @@ def edit(request):
 
 
 def get_user_objects(user, model):
+	'''
+	Function to get instances of any model associated with a specific user. Right now idle, since all of the models
+	have related names defined.
+	'''
 	try:
 		objects = get_list_or_404(model, user=user)
 	except:
@@ -147,11 +193,21 @@ def get_user_objects(user, model):
 	return objects
 
 
-@login_required
+'''@login_required
 def messages(request):
-	return render(request, 'account/messages.html', {})
+	return render(request, 'account/messages.html', {})'''
 
 def user_search(request):
+	'''
+	View function to handle user searches. Retrieves data from the GET requests GET['query']. 
+	Gets all the user objects and filters them based on the criteria.
+
+	Args:
+		request
+
+	Returns:
+		User search screen with the queried users as context.
+	'''
 	if request.GET:
 		search = request.GET.get('query')
 		queries = search.split(" ")

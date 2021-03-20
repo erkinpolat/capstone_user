@@ -17,6 +17,7 @@ urlpatterns = [
 	path('welcome/', views.mainpage, name='mainpage'),
 	path('<slug:region_slug>/', views.recipe_list, name='recipes_by_region'),
 	path('articles/<slug:category_slug>/', views.article_list, name='articles_by_category'),
+	path('about', views.about, name='about'),
 ]
 
 

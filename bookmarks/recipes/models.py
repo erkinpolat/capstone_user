@@ -14,6 +14,9 @@ import sys
 
 
 class CookBook(models.Model):
+	'''
+	Model for CookBooks. stores user, title, collaborators, picture, template (edited picture inside a notebook), description. slug and time of creation.
+	'''
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='cookbooks_created', on_delete=models.CASCADE)
 	title = models.TextField(max_length=200)
 	collaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='cookbooks_collaborating', blank=True)
@@ -27,6 +30,10 @@ class CookBook(models.Model):
 		return self.title
 
 	def save(self, *args, **kwargs):
+		'''
+		function to save the CookBook. uses the function prepare_cookbook_image to create the rendered image for the cookbook
+		Saving needs to be handled this way because you cant edit the image fields in Django right away
+		'''
 
 		pic = Image.open(self.picture)
 		title = str(self.title)
@@ -51,6 +58,10 @@ class CookBook(models.Model):
 		return reverse('recipes:cookbook_detail', args=[self.id, self.slug])
 
 class Recipe(models.Model):
+	'''
+	Model for a single recipe. Stores user, title, slug, pucture. region. cookbook. country, diet, prep_time, description,
+	steps, ingredients, time of created and users that liked the recipe
+	'''
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='recipes_created', on_delete=models.CASCADE)
 	title = models.CharField(max_length = 200)
 	slug = models.SlugField(max_length=200, blank=True)
@@ -70,6 +81,9 @@ class Recipe(models.Model):
 		return self.title
 
 	def save(self, *args, **kwargs):
+		'''
+		Upon saving a slug is created
+		'''
 		if not self.slug:
 			self.slug = slugify(self.title)
 		super().save(*args, **kwargs)
@@ -80,6 +94,9 @@ class Recipe(models.Model):
 
 
 class Diet(models.Model):
+	'''
+	Model for dietary prefeerences. The recipe model uses the instances here as categories to choose from.
+	'''
 	name = models.CharField(max_length = 30)
 	slug = models.SlugField(max_length=200, blank=True)
 
@@ -93,6 +110,9 @@ class Diet(models.Model):
 		super().save(*args, **kwargs)
 
 class Region(models.Model):
+	'''
+	Model for different regions. The recipe model uses the instances here as categories to choose from.
+	'''
 	name = models.CharField(max_length = 30)
 	slug = models.SlugField(max_length=200, blank=True)
 
@@ -108,6 +128,9 @@ class Region(models.Model):
 		return f"/recipes/{self.slug}/"
 
 class Article(models.Model):
+	'''
+	Model for articles. Stores user, title, slug, category, picture, description, time of creation and users that liked the article.
+	'''
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='articles_created', on_delete=models.CASCADE)
 	title = models.CharField(max_length = 200)
 	slug = models.SlugField(max_length=200, blank=True)
@@ -121,6 +144,9 @@ class Article(models.Model):
 		return self.title
 
 	def save(self, *args, **kwargs):
+		'''
+		A slug is created upon saving
+		'''
 		if not self.slug:
 			self.slug = slugify(self.title)
 		super().save(*args, **kwargs)
@@ -131,6 +157,9 @@ class Article(models.Model):
 
 
 class Category(models.Model):
+	'''
+	Model for different article categories. The recipe model uses the instances here as categories to choose from.
+	'''
 	name = models.CharField(max_length = 30)
 	slug = models.SlugField(max_length=200, blank=True)
 
@@ -146,6 +175,9 @@ class Category(models.Model):
 		return f"/recipes/articles/{self.slug}/"
 
 class Comment(models.Model):
+	'''
+	Model for comments. Stores user associated, the content of the comment and the time of creation. Is a superclass.
+	'''
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(class)s_comments_written', on_delete=models.CASCADE)
 	body = models.TextField()
 	created = models.DateTimeField(auto_now_add=True)
@@ -156,9 +188,15 @@ class Comment(models.Model):
 
 
 class RecipeComment(Comment):
+	'''
+	Recipe comment model that inherits from the Comment model. Stores the recipe associated with as well.
+	'''
 	post = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='comments')
 
 class ArticleComment(Comment):
+	'''
+	Article comment model that inherits from the Comment model. Stores the article associated with as well.
+	'''
 	post = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
 
 

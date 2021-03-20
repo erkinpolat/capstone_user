@@ -19,6 +19,17 @@ from django.contrib.auth import get_user_model
 # Create your views here.
 @login_required
 def recipe_create(request, id, slug):
+	'''
+	Function to create recipes for a given CookBook. If request is GET, displays the form. If the request is POST creates the new recipe
+	with the data received from the RecipeCreateForm
+
+	Args:
+		id: The id of the CookBook the recipe will be associated with
+		slug: The slug of the CookBook
+
+	Returns:
+		Either the rendered template for the empty recipe creation form or the page for the newly created recipe based on the type of the request
+	'''
 	if request.method == 'POST':
 		form = RecipeCreateForm(data = request.POST, files=request.FILES)
 		if form.is_valid():
@@ -41,6 +52,16 @@ def recipe_create(request, id, slug):
 
 @login_required
 def article_create(request):
+	'''
+	Function to create new articles. Unlike recipes, the articles don't need to be associated with any other object.
+	with the data received from the ArticleCreateForm
+
+	Args:
+		request
+
+	Returns:
+		The empty article creation form if the request is GET, or the newly created article if the request is POST
+	'''
 	if request.method == 'POST':
 		form = ArticleCreateForm(data = request.POST, files=request.FILES)
 		if form.is_valid():
@@ -56,6 +77,15 @@ def article_create(request):
 
 @login_required
 def cookbook_create(request):
+	'''
+	Function to create new CookBooks with the data received from the CookBookCreateForm upon POSt request.
+
+	Args:
+		request
+
+	Returns:
+		The empty CookBook creation form if the request is GET, or the newly created CookBook if the request is POST
+	'''
 	if request.method == 'POST':
 		form = CookBookCreateForm(data = request.POST, files=request.FILES)
 		if form.is_valid():
@@ -77,6 +107,19 @@ def cookbook_create(request):
 	return render(request, 'recipes/recipe/cookbook_create.html', {'section': 'recipes', 'form': form})
 
 def recipe_detail(request, id, slug):
+	'''
+	Function to display a single recipe. If the method is GET, just gets the recipe and all the likes and comments associated with it.
+	If the method is saves the like or the comment in the database based on the name of the request.
+
+	Receives the comment data from the POST['comment'] and receives the like information from POST['title'] 
+
+	Args:
+		request
+		id: Id of the recipe to be displayed
+		slug: Slug of the recipe to be displayed
+	Returns:
+		Template to be rendered for a given recipe 
+	'''
 	recipe = get_object_or_404(Recipe, id=id, slug=slug)
 	comments = recipe.comments.all()	
 	ingredients = recipe.ingredients.splitlines()
@@ -117,6 +160,20 @@ def recipe_detail(request, id, slug):
 	return render(request, 'recipes/recipe/article.html', {'section': 'recipes', 'recipe': recipe, 'ingredients': ingredients, 'steps': steps, 'diet': diet, 'comments': comments, 'comment_form': comment_form})
 
 def article_detail(request, id, slug):
+	'''
+	Function to display a single article. If the method is GET, just gets the article and all the likes and comments associated with it.
+	If the method is saves the like or the comment in the database based on the name of the request.
+
+	Receives the comment data from the POST['comment'] and receives the like information from POST['title'] 
+
+	Args:
+		request
+		id: Id of the article to be displayed
+		slug: Slug of the article to be displayed
+	Returns:
+		Template to be rendered for a given article 
+	'''
+
 	article = get_object_or_404(Article, id=id, slug=slug)
 	comments = article.comments.all()
 	new_comment = None
@@ -155,6 +212,17 @@ def article_detail(request, id, slug):
 
 
 def cookbook_detail(request, id, slug):
+	'''
+	Function to display a cookbook nad all the recipes associated with it. Gets all the recipes and the collaborators from the database.
+	
+
+	Args:
+		request
+		id: Id of the CookBook to be displayed
+		slug: Slug of the CookBook to be displayed
+	Returns:
+		Template to be rendered for a given CookBook 
+	'''
 	cookbook = get_object_or_404(CookBook, id=id, slug=slug)
 
 	recipes = cookbook.recipes_in_cookbook.all()
@@ -165,17 +233,13 @@ def cookbook_detail(request, id, slug):
 	return render(request, 'recipes/recipe/cookbook_detail.html', {'section': 'recipes', 'cookbook': cookbook, 'recipes': recipes, 'collaborators': collaborators})
 
 
-
-class PostListView(ListView):
-	queryset = Recipe.objects.all()
-	context_object_name = 'recipes'
-	paginate_by = 3
-	template_name = 'recipes/recipe/list.html'
-
 @ajax_required
 @login_required
 @require_POST
 def recipe_like(request):
+	'''
+	Function to handle the Ajax when a user likes a recipe or an article. 
+	'''
 	recipe_id = request.POST.get('id')
 	action = request.POST.get('action')
 	if recipe_id and action:
@@ -192,11 +256,24 @@ def recipe_like(request):
 
 
 def mainpage(request):
+	'''
+	Function to handle the view for the mainpage. Gets the latest 6 recipes and 6 articles and renders the template for the mainpage.
+	'''
 	recipes = Recipe.objects.order_by('-created')[:6]
 	articles = Article.objects.order_by('-created')[:6]
 	return render(request, 'recipes/recipe/mainpage.html', {'recipes': recipes, 'articles': articles})
 
 def cookbook_list(request):
+	'''
+	View function to handle the list of CookBooks. Is called from the url for the view of all CookBooks. Also uses the searchbar.
+	If the user typed something in the searchbar, the data GET['q'] from GET request is passed into the get_query_set() function 
+	to get a custom query.
+
+	Args:
+		request
+	Returns:
+		Rendered template for all of the queried CookBooks
+	'''
 	query=""
 
 	if request.GET:
@@ -229,7 +306,18 @@ def cookbook_list(request):
 
 
 def recipe_list(request, region_slug=False):
+	'''
+	View function to handle the list of recipes. Is called from the url for the view of all recipes. Also uses the searchbar.
+	If the user typed something in the searchbar, the the data GET['q'] from GET request is passed into the get_query_set() function 
+	to get a custom query.
+	Also, filters the recipes based on the region if a region slug is provided by the user.
 
+	Args:
+		request
+		region_slug: slug representing a region. Passed through a button
+	Returns:
+		Rendered template for all of the queried recipes
+	'''
 	query=""
 
 	if request.GET:
@@ -262,6 +350,19 @@ def recipe_list(request, region_slug=False):
 	return render(request, 'recipes/recipe/list.html', {'section': 'recipes', 'recipes': recipes, 'browse': regions, 'browse_key': "Region"})
 
 def article_list(request, category_slug=False):
+	'''
+	View function to handle the list of articles. Is called from the url for the view of all articles. Also uses the searchbar.
+	If the user typed something in the searchbar, the data GET['q'] from GET request is passed into the get_query_set() function 
+	to get a custom query.
+	Also, filters the articles based on the category if a category slug is provided by the user.
+
+	Args:
+		request
+		category_slug: slug representing a region. Passed through a button
+	Returns:
+		Rendered template for all of the queried articles
+	'''
+
 
 	query=""
 
@@ -294,7 +395,17 @@ def article_list(request, category_slug=False):
 	return render(request, 'recipes/recipe/list.html', {'section': 'articles', 'recipes': articles, 'browse': categories, 'browse_key': "Category"})
 
 def get_query_set(model, query=None):
+	'''
+	Function to run queries on any article/recipe/CookBook object. Splits the query into words and searches the title and the descriptions of the  given model 
+	by using each of these keywords.
 
+	Args:
+		model: Which model the search will be performed on
+		query: String to be queried
+
+	Returns:
+		A query of model instances filtered for the search criteria
+	'''
 	queryset = []
 	queries = query.split(" ")
 	for q in queries:
@@ -308,7 +419,21 @@ def get_query_set(model, query=None):
 
 	return list(set(queryset))
 
+@login_required
 def BootstrapFilterView(request, id, slug):
+	'''
+	Function to handle searching of users and add them as a colaborator to the CookBook. If the request is GET, searches all of the users
+	names, surnames and usernames for compatible matches and returns a list of queried users. The data is passed through GET['title_contains']
+	If the request is POST, adds a given user to the list of collaborators for  that recipe.
+
+	Args:
+		request
+		id: CookBook id
+		slug: CookBook slug
+	
+	Returns:
+		Either the rendered template contatining a list of users or redirects back to the CookBook page after adding the collaborator.
+	'''
 	cookbook = get_object_or_404(CookBook, id=id, slug=slug)
 	collaborators = cookbook.collaborators.all()
 	
@@ -348,5 +473,12 @@ def BootstrapFilterView(request, id, slug):
 
 
 	return render(request, "recipes/recipe/collaborator_form.html", {})
+
+
+def about(request):
+	'''
+	Function to handle the static about page. 
+	'''
+	return render(request, "recipes/recipe/about.html", {})
 
 
