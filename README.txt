@@ -26,6 +26,7 @@ Set your directory to the folder called bookmarks
 - The account folder is for the user accounts, authentication and the user related activities such as profiles, messaging or following. 
 - The common folder is for the general extra elements that would be helpful in multiple locations. Currently this holds the custom decorators.
 - The media folder stores the media related files such as pictures. In the database the url routes for the media are stored and the actual content is accessed through this folder. 
+- the chat folder is for the chat app that allows messaging.
 
 * The MVC Structure
 Inside every app, there are models.py, views.py, a templates folder and urls.py
